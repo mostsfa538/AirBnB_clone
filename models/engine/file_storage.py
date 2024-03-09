@@ -28,7 +28,7 @@ class FileStorage:
         FileStorage.__objects[key] = obj
 
     @staticmethod
-    def to_json_string(self, objects):
+    def to_json_string(objects):
         final_dec = {}
         for key in objects.keys():
             val = objects[key].to_dict()
@@ -43,18 +43,26 @@ class FileStorage:
             fily.write(json.dumps(jsn_format))
     
     @staticmethod
-    def from_json_string(self):
-        if os.path.exists(FileStorage.__file_path):
-            with open(FileStorage.__file_path, mode="r", encoding='utf-8') as fily:
-                dic = json.loads(fily.read())
-            return dic
+    def from_json_string(string):
+        if string:
+            return json.loads(string)
+        else:
+            return {}
 
     def reload(self):
         """ deserializes the JSON file to __objects
         (only if the JSON file (__file_path) exists
         """
         from models.base_model import BaseModel
-        dic = FileStorage.from_json_string(self)
-        for key in dic:
-            new = BaseModel(dic[key])
-            FileStorage.__objects[key] = new
+
+        if os.path.exists(FileStorage.__file_path):
+            with open(FileStorage.__file_path, mode="r", encoding="utf-8") as fily:
+                var = fily.read()
+            if var is None or var == "":
+                return
+
+            objects = FileStorage.from_json_string(var)
+            for key, value in objects.items():
+                FileStorage.__objects[key] = BaseModel(**value)
+        else:
+            return
