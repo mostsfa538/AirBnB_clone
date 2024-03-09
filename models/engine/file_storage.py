@@ -41,7 +41,7 @@ class FileStorage:
         jsn_format = FileStorage.to_json_string(FileStorage.__objects)
         with open(FileStorage.__file_path, mode="w", encoding="utf-8") as fily:
             fily.write(json.dumps(jsn_format))
-    
+
     @staticmethod
     def from_json_string(string):
         if string:
@@ -56,7 +56,7 @@ class FileStorage:
         from models.base_model import BaseModel
 
         if os.path.exists(FileStorage.__file_path):
-            with open(FileStorage.__file_path, mode="r", encoding="utf-8") as fily:
+            with open(FileStorage.__file_path, "r") as fily:
                 var = fily.read()
             if var is None or var == "":
                 return
