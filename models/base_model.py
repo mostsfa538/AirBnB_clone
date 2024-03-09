@@ -3,18 +3,35 @@
 
 import uuid
 from datetime import datetime
+from models.engine.file_storage import FileStorage
+from models import storage
+
 
 class BaseModel:
     """base model class
     """
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         """initializing some instances attributes
         """
-        self.id = uuid.uuid4()
-        self.id = str(self.id)
-        self.created_at = datetime.now()
-        self.updated_at = self.created_at
+        if kwargs:
+            for key in kwargs.keys():
+                if not key == "__class__":
+                    if key == "created_at" or key == "updated_at":
+                        val = self.convert_to_datetime_object(kwargs[key])
+                        setattr(self, key, val)
+                    else:
+                        setattr(self, key, kwargs[key])
+        else:
+            self.id = uuid.uuid4()
+            self.id = str(self.id)
+            self.created_at = datetime.now()
+            self.updated_at = self.created_at
+            storage.new(self)
+
+    @classmethod
+    def convert_to_datetime_object(self, value):
+        return datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
 
     def __str__(self):
         """string representation of an object
@@ -27,6 +44,7 @@ class BaseModel:
                 updated_at with the current datetime
         """
         self.updated_at = datetime.now()
+        storage.save()
 
     def to_dict(self):
         """returns a dictionary containing all \
@@ -37,7 +55,8 @@ class BaseModel:
         for key in self.__dict__.keys():
             if self.__dict__[key]:
                 if key == "created_at" or key == "updated_at":
-                    formating = self.__dict__[key].strftime("%Y-%m-%dT%H:%M:%S.%f")
+                    formating = self.__dict__[key].strftime(
+                            "%Y-%m-%dT%H:%M:%S.%f")
                     my_dic[key] = formating
                 else:
                     my_dic[key] = self.__dict__[key]
