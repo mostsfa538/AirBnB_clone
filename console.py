@@ -2,6 +2,7 @@
 """airbnb entry point"""
 
 import cmd
+import sys
 
 
 class HBNBCommand(cmd.Cmd):
