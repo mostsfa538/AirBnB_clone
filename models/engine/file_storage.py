@@ -23,12 +23,20 @@ class FileStorage:
 
     def new(self, obj):
         """ sets in __objects the obj with key <obj class name>.id
+
+        args:
+            obj: new object
         """
         key = obj.__class__.__name__ + ".{}".format(obj.id)
         FileStorage.__objects[key] = obj
 
     @staticmethod
     def to_json_string(objects):
+        """converting to json
+
+        args:
+            objects: ditionary of objects
+        """
         final_dec = {}
         for key in objects.keys():
             val = objects[key].to_dict()
@@ -44,6 +52,11 @@ class FileStorage:
 
     @staticmethod
     def from_json_string(string):
+        """converting from fson string
+
+        args:
+            string: json string
+        """
         if string:
             return json.loads(string)
         else:
