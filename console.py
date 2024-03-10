@@ -15,9 +15,13 @@ class HBNBCommand(cmd.Cmd):
         return True
 
     def do_quit(self, line):
-        """ending the console session
+        """quitting the console session
         """
         return True
+
+    def do_emptyline(self, line):
+        pass
+        
 
 
 if __name__ == '__main__':
